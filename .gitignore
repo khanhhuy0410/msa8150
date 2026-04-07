@@ -1,2 +1,5 @@
 # Plots
 *.png
+
+# Generated outputs
+statistical_summary.csv
