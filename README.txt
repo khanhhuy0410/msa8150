@@ -15,7 +15,7 @@ patterns, and prepare it for downstream modeling.
 PROJECT STRUCTURE
 ------------------------------------------------------------------------
   msa8150.py                   Main analysis script
-  data.csv                     Raw dataset (not tracked in git)
+  data.csv                     Raw dataset
   requirements.txt             Python dependencies
   statistical_summary.csv      Output: descriptive statistics
   numeric_features_histogram.png
@@ -28,17 +28,13 @@ PROJECT STRUCTURE
 SETUP
 ------------------------------------------------------------------------
 1. Clone the repository
-     git clone <repo-url>
+     git clone https://github.com/khanhhuy0410/msa8150
      cd <repo-folder>
 
 2. Install dependencies
      pip install -r requirements.txt
 
-3. Add the dataset
-     Place data.csv in the project root. The file is not tracked in
-     git — get it from a teammate.
-
-4. Run the script
+3. Run the script
      python msa8150.py
 
 ------------------------------------------------------------------------

@@ -3,3 +3,6 @@
 
 # Generated outputs
 statistical_summary.csv
+
+# macOS
+.DS_Store
