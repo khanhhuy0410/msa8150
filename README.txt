@@ -29,9 +29,13 @@ SETUP
 ------------------------------------------------------------------------
 1. Clone the repository
      git clone https://github.com/khanhhuy0410/msa8150
-     cd <repo-folder>
+     cd 'path/to/your/project'
 
-2. Install dependencies
+2. Create virtual environment
+     python -m venv venv
+     source venv/bin/activate
+
+3. Install dependencies
      pip install -r requirements.txt
 
 3. Run the script
@@ -53,27 +57,34 @@ Section 1 — Exploratory Data Analysis
 
   1.3 Histograms
       Generates distribution plots for all numeric columns (with KDE
-      overlay) and count bar charts for all categorical columns.
-      Saved as PNG files.
+      overlay) Saved as PNG files.
 
-  1.4 Violin plots
+  1.4 Bar chart
+      Generates bar chart for all categorical columns. Saved as PNG files.
+
+  1.5 Violin plots
       Plots all numeric features grouped by Gender and Occupation to
       assess whether these categorical variables separate the
       distributions. Saved as PNG files.
 
-Section 2 — Preprocessing & Cleaning
-
-  2.1 Drop user_id
+  1.6 Drop user_id column
       Removed to prevent data leakage. num_cols is redefined after
       the drop.
 
-  2.2 IQR outlier detection
-      Flags outliers in each numeric column using the 1.5xIQR rule
-      and prints a summary of detected outliers with bounds.
+  1.7 Outlier detection
+      Flags outliers in each numeric variable using 1.5xIQR detection method 
+      and prints outlier summary.
 
-  2.3 Box plot for sleep_quality_score
-      Visualizes the distribution with individual outlier points.
-      Further analysis of the outliers.
+  1.8 Box plot for sleep_quality_score
+      Further exploration on outliers; none were removed.
+
+  1.9 Scatterplots
+      Generates pairwise relationships for all variables (with KDE overlay).
+      Saved as PNG files.
+
+  1.10 Pearson correlation analysis
+      Generates heatmap with coefficients for all pairs and prints coefficients
+      of pairs with largest magnitudes.
 
 ------------------------------------------------------------------------
 DEPENDENCIES

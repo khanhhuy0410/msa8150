@@ -33,6 +33,14 @@ if missing.sum() > 0:
 else:
     print("\nNo missing values\n")
 
+n_dupes = df.duplicated().sum()
+if n_dupes > 0:
+    print(f"Duplicate rows: {n_dupes}")
+    df = df.drop_duplicates()
+    print(f"Duplicates removed. New shape: {df.shape[0]} rows and {df.shape[1]} columns.")
+else:
+    print("No duplicate rows\n")
+
 print("Unique values")
 print(df.nunique())
 
@@ -57,7 +65,7 @@ if num_cols:
     plt.savefig("numeric_features_histogram.png")
     plt.close()
 
-# Categorical columns — bar charts (count plots)
+# --- 1.4 Bar chart for categorical columns ---
 if cat_cols:
     n_cols = 3
     n_rows = -(-len(cat_cols) // n_cols)
@@ -77,7 +85,7 @@ if cat_cols:
     plt.close()
 
 
-# --- 1.4 Violin plots — numeric features by gender and occupation ---
+# --- 1.5 Violin plots — grouped by gender and occupation ---
 col_map = {c.lower(): c for c in df.columns}
 group_cols = [col_map[c] for c in ["gender", "occupation"] if c in col_map]
 
@@ -98,17 +106,11 @@ for group in group_cols:
     plt.savefig(f"violin_by_{group.lower()}.png")
     plt.close()
 
-
-# =============================================================================
-# SECTION 2: DATA PREPROCESSING & CLEANING
-# =============================================================================
-
-# 2.1 --- Drop user_id column (data leakage) ---
+# --- 1.6 Drop user_id column (data leakage) ---
 df = df.drop(columns="user_id")
 num_cols = df.select_dtypes(include="number").columns.tolist()
 
-# 2.2 --- Handle outliers using IQR Method ---
-
+# --- 1.7 IQR Outlier detection method ---
 for col in num_cols:
     Q1 = df[col].quantile(0.25)
     Q3 = df[col].quantile(0.75)
@@ -120,7 +122,7 @@ for col in num_cols:
     f"    {col}: {n_outliers} outlier(s) detected "
     f"[bounds {lower:.3f}, {upper:.3f}]")
 
-# 2.3 --- Box plot for sleep_quality_score outliers ---
+# 1.8 --- Box plot for sleep_quality_score outliers ---
 Q1 = df["sleep_quality_score"].quantile(0.25)
 Q3 = df["sleep_quality_score"].quantile(0.75)
 IQR = Q3 - Q1
@@ -136,3 +138,33 @@ ax.set_title("sleep_quality_score — Box and Whisker Plot (red = outliers)")
 plt.tight_layout()
 plt.savefig("boxplot_sleep_quality_score.png")
 plt.close()
+
+# --- 1.9 Scatterplot / pairwise relationships --
+pair_plot = sns.pairplot(df[num_cols], plot_kws={"alpha": 0.3, "s": 10}, diag_kind="kde")
+pair_plot.fig.suptitle("Pairwise Scatterplots — Numeric Features", y=1.01, fontsize=14)
+plt.savefig("pairplot_numeric.png")
+plt.close()
+
+# --- 1.10 Pearson Correlation Analysis
+corr = df[num_cols].corr()
+fig, ax = plt.subplots(figsize=(12, 10))
+sns.heatmap(corr, annot=True, fmt=".2f", cmap="coolwarm",
+            center=0, square=True, linewidths=0.5, ax=ax)
+ax.set_title("Correlation Matrix — Numeric Features")
+plt.tight_layout()
+plt.savefig("correlation_heatmap.png")
+plt.close()
+# corr.to_csv("correlation_matrix.csv")
+
+corr_pairs = (corr.where(np.triu(np.ones(corr.shape), k=1).astype(bool))
+              .stack()
+              .reset_index())
+corr_pairs.columns = ["feature_1", "feature_2", "correlation"]
+corr_pairs["abs_correlation"] = corr_pairs["correlation"].abs()
+corr_pairs = corr_pairs.sort_values("abs_correlation", ascending=False)
+
+print("\nTop 10 correlated pairs:")
+print(corr_pairs.head(10).to_string(index=False))
+
+# To do next: Up to this point, EDA has been very broad; all pairplots/correlations are done without a target variable
+# Once target variable is picked (most likely Sleep Quality Score), run plots for numeric variables against target.
