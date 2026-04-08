@@ -6,3 +6,6 @@ statistical_summary.csv
 
 # macOS
 .DS_Store
+
+# PyCharm
+.idea/
